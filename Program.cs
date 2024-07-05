@@ -5,14 +5,27 @@ namespace ProjectBo4Launcher
     {
         public static async Task Main()
         {
-            if (await Updates.ShouldUpdate())
+/*            if (!File.Exists("BlackOps4.exe"))
+            { 
+                Console.WriteLine("Couldn't find BlackOps4.exe, please run this appliction from your Black Ops 4 game directory.");
+                Console.ReadKey(true);
+                return;
+            }*/
+
+            await Updates.CheckForUpdates();
+/*            if (await Updates.CheckForUpdates())
             {
                 Console.WriteLine("Need to Update");
+                HttpClient httpClient = new HttpClient();
+                var stream = await httpClient.GetStreamAsync()
+                using FileStream filestream = File.Create(path: Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "update"));
+
             }
             else
             {
                 Console.WriteLine("We are up to date");
-            }
+                Console.WriteLine(Path.GetFullPath(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "update")));
+            }*/
         }
 
     }
