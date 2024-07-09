@@ -1,10 +1,11 @@
-﻿using System.Text.Json;
+﻿using System.IO.Compression;
+using System.Text.Json;
 
 namespace ProjectBo4Launcher
 {
     internal class Updates
     {
-        public static async Task CheckForUpdates() // Definitly replacing this with a version file method if people actually use my one
+        public static async Task CheckForUpdates() // Definitly replacing this with a version file or something method if people actually use my one
         {
             Console.WriteLine("Checking for updates...");
             const string currentVersion = @"https://github.com/bodnjenie14/Project_-bo4_Launcher/releases/download/release/Project_BO4_Launcher_Update_1.0.17.4.4.zip"; // Will need to change each update
@@ -24,7 +25,7 @@ namespace ProjectBo4Launcher
                     if (currentVersion != assets)
                     {
                         Console.WriteLine("Need to update...\nDownloading newest version...");
-                        await UpdateLancher();
+                        await DownloadLauncherUpdate();
                     }
                     else
                     {
@@ -42,14 +43,26 @@ namespace ProjectBo4Launcher
                 Console.WriteLine("Failed to check for updates");
             }
         }
-        private static async Task UpdateLancher()
+        private static async Task DownloadLauncherUpdate()
         {
             var client = new HttpClient();
             var stream = await client.GetStreamAsync(@"https://github.com/skills/introduction-to-github/archive/refs/heads/main.zip"); // For faster testing
             //var stream = await client.GetStreamAsync(assets);
-            using FileStream filestream = File.Create(path: Path.Combine(Path.GetTempPath(), "ProjectBo4Update.zip"));
+            string downloadPath = Path.Combine(Path.GetTempPath(), "ProjectBo4Update.zip");
+            using FileStream filestream = File.Create(downloadPath);
             stream.CopyTo(filestream);
-            Console.WriteLine("The download was completed");
+            Console.WriteLine("The update download was completed.");
+            ExtractLauncherUpdate(downloadPath);
+        }
+        private static void ExtractLauncherUpdate(string archive)
+        {
+            Console.WriteLine("Copying Launcher files to Current Folder");
+            string gameDir = Directory.GetCurrentDirectory();
+            Environment.CurrentDirectory = Path.GetTempPath();
+            ZipFile.ExtractToDirectory(archive, gameDir);
+            Console.WriteLine("Launcher files copied.");
+            Console.WriteLine("Removing temporary files");
+            File.Delete(archive);
         }
     }
 }

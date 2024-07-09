@@ -1,31 +1,38 @@
 ﻿
+using ProjectBO4Launcher;
+
 namespace ProjectBo4Launcher
 {
     internal class Program
     {
         public static async Task Main()
         {
-/*            if (!File.Exists("BlackOps4.exe"))
-            { 
-                Console.WriteLine("Couldn't find BlackOps4.exe, please run this appliction from your Black Ops 4 game directory.");
-                Console.ReadKey(true);
-                return;
-            }*/
+            Console.Title = "Project BO4 Launcher";
+            CheckFiles.CheckClientDlls();
+            //CheckFiles.ProjectBo4DllsInGameDir();
+            //CheckFiles.CheckLPCFiles();
+            /*            if (!File.Exists("BlackOps4.exe"))
+                        { 
+                            Console.WriteLine("Couldn't find BlackOps4.exe, please run this appliction from your Black Ops 4 game directory.");
+                            Console.ReadKey(true);
+                            return;
+                        }*/
 
-            await Updates.CheckForUpdates();
-/*            if (await Updates.CheckForUpdates())
-            {
-                Console.WriteLine("Need to Update");
-                HttpClient httpClient = new HttpClient();
-                var stream = await httpClient.GetStreamAsync()
-                using FileStream filestream = File.Create(path: Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "update"));
+            //await Updates.CheckForUpdates();
 
-            }
-            else
-            {
-                Console.WriteLine("We are up to date");
-                Console.WriteLine(Path.GetFullPath(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "update")));
-            }*/
+            /*            if (await Updates.CheckForUpdates())
+                        {
+                            Console.WriteLine("Need to Update");
+                            HttpClient httpClient = new HttpClient();
+                            var stream = await httpClient.GetStreamAsync()
+                            using FileStream filestream = File.Create(path: Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "update"));
+
+                        }
+                        else
+                        {
+                            Console.WriteLine("We are up to date");
+                            Console.WriteLine(Path.GetFullPath(Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "update")));
+                        }*/
         }
 
     }
