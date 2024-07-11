@@ -1,0 +1,4 @@
+EAB03F6C98629A3F4FEF8CEB2476740350A1955D project-bo4-data\files\clientDlls\mp\d3d11.dll
+69C406DC81744E0A1967AD9CC72B03AEFA1B7782 project-bo4-data\files\clientDlls\reshade_mp\UMPDC.dll
+943278711952DCB432C42C1168DE179B040C49C6 project-bo4-data\files\clientDlls\reshade_solo\UMPDC.dll
+BB44BB1EBFCDEA4BBD8ED2DD9B85829340DFC36C project-bo4-data\files\clientDlls\solo\d3d11.dll
