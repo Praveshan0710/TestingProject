@@ -1,11 +1,29 @@
 ﻿using System.IO.Compression;
+using System.Reflection;
 using System.Text.Json;
 
 namespace ProjectBo4Launcher
 {
     internal class Updates
     {
-        public static async Task CheckForUpdates() // Definitly replacing this with a version file or something method if people actually use my one
+        public static async Task CheckForMyUpdates()
+        {
+            Version? currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
+            using (var client  = new HttpClient())
+            {
+                string updateVesion = await client.GetStringAsync(@"https://github.com/Praveshan0710/ProjectBO4Launcher/raw/Testing/"); // version file
+            }
+        }
+        public static async Task DownloadUpdatedFile(string filename) // Should move to updates
+        {
+            const string gitRepo = @"https://github.com/Praveshan0710/ProjectBO4Launcher/raw/Testing/"; //project-bo4-data/files/clientDlls/mp/d3d11.dll -example of a file to update
+            var client = new HttpClient();
+            var stream = await client.GetStreamAsync($"{gitRepo}{filename.Replace(@"\", @"/")}");
+            FileStream fileStream = File.Create(filename);
+            stream.CopyTo(fileStream);
+            Console.WriteLine($"{filename} was updated");
+        }
+        public static async Task CheckForUpdates()
         {
             Console.WriteLine("Checking for updates...");
             const string currentVersion = @"https://github.com/bodnjenie14/Project_-bo4_Launcher/releases/download/release/Project_BO4_Launcher_Update_1.0.17.4.4.zip"; // Will need to change each update
@@ -15,7 +33,7 @@ namespace ProjectBo4Launcher
             var res = await client.GetAsync(updateURL);
             try
             {
-                res.EnsureSuccessStatusCode();
+                res.EnsureSuccessStatusCode(); // Replace with IF to avoid crash if failed
 
                 if (await client.GetAsync(updateURL) != null) // Need to add warning for update failed but, let them continue to play without it
                 {
@@ -30,7 +48,6 @@ namespace ProjectBo4Launcher
                     else
                     {
                         Console.WriteLine("Up to date");
-                        
                     }
                 }
                 else
