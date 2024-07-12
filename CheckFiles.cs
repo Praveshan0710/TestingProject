@@ -1,9 +1,31 @@
-﻿using System.Security.Cryptography;
+﻿using System.Reflection;
+using System.Security.Cryptography;
+using ProjectBo4Launcher;
+using File = System.IO.File;
 
 namespace ProjectBO4Launcher
 {
     internal class CheckFiles
     {
+        public static async void CheckForMyUpdates()
+        {
+            File.Delete("ProjectBO4Launcher.delete");
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            string currentVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            using (var client = new HttpClient())
+            {
+                string updateVesion = await client.GetStringAsync(@"https://raw.githubusercontent.com/Praveshan0710/TestingProject/Testing/launcher-version/"); // version file
+                if (currentVersion != updateVesion)
+                {
+                    Updates.UpdateLauncher();
+                }
+            }
+        }
+        public static bool isBlackOps4Dir()
+        {
+            return File.Exists("BlackOps4.exe");
+        }
         public static void CopyProjectBo4Dll()
         {
             //Depends on the user's choice
@@ -43,28 +65,42 @@ namespace ProjectBO4Launcher
         public static void CheckClientDlls() // new thing
         {
             string clientDllsDir = @"project-bo4-data\files\clientDlls"; // New to Test in other funtions
+            File.Delete("launcher-hashes.txt");
             foreach (var dir in Directory.GetDirectories(clientDllsDir))
             {
                 foreach (var file in Directory.GetFiles(dir))
                 {
-                    Console.WriteLine(file);
-                    SHA256 sha256 = SHA256.Create();
-                    var stream = File.Open(file, FileMode.Open);
-                    stream.Position = 0;
-                    var hashVal = sha256.ComputeHash(stream);
-                    PrintByteArray(hashVal); //Display
+                    using (var stream = File.Open(file, FileMode.Open))
+                    {
+                        stream.Position = 0;
+                        WriteClientDllHashesToFile(stream, file);
+                    }
                 }
             }
+            CompareHashFile();
         }
-        // Used for testing
-        public static void PrintByteArray(byte[] array)
+        private static void WriteClientDllHashesToFile(FileStream stream, string filename)
         {
-            for (int i = 0; i < array.Length; i++)
+            using (var sha1 = SHA1.Create())
             {
-                Console.Write($"{array[i]:X2}");
-                if ((i % 4) == 3) Console.Write(" ");
+                var hashString = BitConverter.ToString(sha1.ComputeHash((stream))).Replace("-", String.Empty);
+                File.AppendAllText("launcher-hashes.txt", $"{hashString} {filename}\n");
             }
-            Console.WriteLine();
+        }
+        private static async Task CompareHashFile()
+        {
+            var lines = File.ReadAllLines("launcher-hashes.txt");
+            var updatedLines = File.ReadAllLines("updated.txt");  //Replace with logic to get the file to compare against
+            for (int i = 0; i < lines.Length; i++)
+            {
+                if (lines[i] != updatedLines[i])
+                {
+                    string filename = updatedLines[i].Substring(41);
+                    Console.WriteLine($"Need to update {filename}");
+                    File.Delete(filename);
+                    await Updates.DownloadUpdatedFile(filename);
+                }
+            }
         }
     }
 

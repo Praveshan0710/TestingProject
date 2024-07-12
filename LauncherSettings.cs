@@ -1,51 +1,52 @@
-﻿namespace ProjectBO4Launcher
+﻿using System.Text.Json;
+using System.Text.Json.Nodes;
+
+namespace ProjectBO4Launcher
 {
     internal class LauncherSettings
-	{
-/*		private string Playername = "Unknown Soldier";
-		public string _playername
-		{
-            get
-            {
-                return Playername;
-            }
-            set
-            {
-                Playername = _playername; 
-            }
-        }
-        private bool Reshade;
-        public bool _reshade
-        {
-            get
-            {
-
-                return Reshade;
-            }
-            set
-            {
-                Reshade = _reshade;
-            }
-        }*/
-
-
-        class PlayerSettings
-        {
-            // This is all we care about to launch the game
-            string DemonWareServerIP;
-            string PlayerName;
-        }
-
-        private static void GetLauncherSettings()
+    {
+        public static void GetClientSettings()
         {
             string settingsFile = "project-bo4.json";
-            //Get and set these from project-bo4.json later
             if (!File.Exists(settingsFile))
             {
-                File.Create(settingsFile);
+                CreateDefaultClientSettings(ref settingsFile);
             }
+
+            string? jsonString = File.ReadAllText(settingsFile);
+
+            JsonNode? jsonObject = JsonNode.Parse(jsonString);
+
+            var playerName = jsonObject["identity"]["name"].ToString();
+            if (playerName.Length < 1)
+            {
+                playerName = Environment.UserName;
+            }
+
+            var demonwareIp = jsonObject["demonware"]["ipv4"].ToString();
+            if (demonwareIp.Length < 7)
+            {
+                demonwareIp = "78.157.42.107";
+            }
+
         }
+        private static void CreateDefaultClientSettings(ref string settingsFile)
+        {
+            var defaultSettings = new
+            {
+                demonware = new { ipv4 = "78.157.42.107" }, // bodnjenie's server
+                identity = new { name = Environment.UserName }
+            };
+            var settings = JsonSerializer.Serialize(defaultSettings, new JsonSerializerOptions() { WriteIndented = true });
+            File.WriteAllText(settingsFile, settings);
+        }
+/*        private static string GetJsonValue(ref string settingsFile)
+        {
+            //string? jsonString = File.ReadAllText(settingsFile);
+
+            JsonNode? jsonObject = JsonNode.Parse(File.ReadAllText(settingsFile));
+            
+        }*/
     }
-
-
 }
+

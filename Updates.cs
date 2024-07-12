@@ -1,11 +1,35 @@
 ﻿using System.IO.Compression;
+using System.Reflection;
 using System.Text.Json;
 
 namespace ProjectBo4Launcher
 {
     internal class Updates
     {
-        public static async Task CheckForUpdates() // Definitly replacing this with a version file or something method if people actually use my one
+        public static async void UpdateLauncher()
+        {
+            using (var client  = new HttpClient())
+            {
+                var stream = await client.GetStreamAsync(@""); //This needs to be the updated launcher file
+                using (FileStream fileStream = File.Create("ProjectBO4Launcher.update"))
+                {
+                    stream.CopyTo(fileStream);
+                }
+                File.Move("ProjectBO4Launcher.exe", "ProjectBO4Launcher.delete");
+                File.Move("ProjectBO4Launcher.update", "ProjectBO4Launcher.exe");
+                System.Diagnostics.Process.Start("ProjectBO4Launcher.exe");
+            }
+        }
+        public static async Task DownloadUpdatedFile(string filename) // Should move to updates
+        {
+            const string gitRepo = @"https://github.com/Praveshan0710/ProjectBO4Launcher/raw/Testing/"; //project-bo4-data/files/clientDlls/mp/d3d11.dll -example of a file to update
+            var client = new HttpClient();
+            var stream = await client.GetStreamAsync($"{gitRepo}{filename.Replace(@"\", @"/")}");
+            FileStream fileStream = File.Create(filename);
+            stream.CopyTo(fileStream);
+            Console.WriteLine($"{filename} was updated");
+        }
+        public static async Task CheckForUpdates()
         {
             Console.WriteLine("Checking for updates...");
             const string currentVersion = @"https://github.com/bodnjenie14/Project_-bo4_Launcher/releases/download/release/Project_BO4_Launcher_Update_1.0.17.4.4.zip"; // Will need to change each update
@@ -15,14 +39,14 @@ namespace ProjectBo4Launcher
             var res = await client.GetAsync(updateURL);
             try
             {
-                res.EnsureSuccessStatusCode();
+                res.EnsureSuccessStatusCode(); // Replace with IF to avoid crash if failed
 
                 if (await client.GetAsync(updateURL) != null) // Need to add warning for update failed but, let them continue to play without it
                 {
                     var stringResponse = await res.Content.ReadAsStringAsync();
-                    var jsonResponse = JsonDocument.Parse(stringResponse).RootElement.GetProperty("assets");
-                    var assets = JsonSerializer.Deserialize<JsonElement>(jsonResponse[0]).GetProperty("browser_download_url").ToString();
-                    if (currentVersion != assets)
+                    var jsonResponse = JsonDocument.Parse(stringResponse).RootElement.GetProperty("remoteVersion");
+                    var remoteVersion = JsonSerializer.Deserialize<JsonElement>(jsonResponse[0]).GetProperty("browser_download_url").ToString();
+                    if (currentVersion != remoteVersion)
                     {
                         Console.WriteLine("Need to update...\nDownloading newest version...");
                         await DownloadLauncherUpdate();
@@ -30,7 +54,6 @@ namespace ProjectBo4Launcher
                     else
                     {
                         Console.WriteLine("Up to date");
-                        
                     }
                 }
                 else
@@ -47,7 +70,6 @@ namespace ProjectBo4Launcher
         {
             var client = new HttpClient();
             var stream = await client.GetStreamAsync(@"https://github.com/skills/introduction-to-github/archive/refs/heads/main.zip"); // For faster testing
-            //var stream = await client.GetStreamAsync(assets);
             string downloadPath = Path.Combine(Path.GetTempPath(), "ProjectBo4Update.zip");
             using FileStream filestream = File.Create(downloadPath);
             stream.CopyTo(filestream);
