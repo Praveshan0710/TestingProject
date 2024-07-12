@@ -22,7 +22,7 @@ namespace ProjectBO4Launcher
                 }
             }
         }
-        public static bool isBlackOps4Dir()
+        public static bool IsBlackOps4Dir()
         {
             return File.Exists("BlackOps4.exe");
         }
@@ -87,7 +87,7 @@ namespace ProjectBO4Launcher
                 File.AppendAllText("launcher-hashes.txt", $"{hashString} {filename}\n");
             }
         }
-        private static async Task CompareHashFile()
+        private static async void CompareHashFile()
         {
             var lines = File.ReadAllLines("launcher-hashes.txt");
             var updatedLines = File.ReadAllLines("updated.txt");  //Replace with logic to get the file to compare against

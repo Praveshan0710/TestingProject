@@ -25,6 +25,9 @@ namespace ProjectBo4Launcher
             //Check for current .json settings
             LauncherSettings.GetClientSettings();
 
+            //Options
+
+
             //CheckFiles.CheckLPCFiles();
 
         }
