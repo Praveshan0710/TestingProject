@@ -62,7 +62,7 @@ namespace ProjectBO4Launcher
             }
 
         }
-        public static void CheckClientDlls() // new thing
+        public static async Task CheckClientDlls() // new thing
         {
             string clientDllsDir = @"project-bo4-data\files\clientDlls"; // New to Test in other funtions
             File.Delete("launcher-hashes.txt");
@@ -87,7 +87,7 @@ namespace ProjectBO4Launcher
                 File.AppendAllText("launcher-hashes.txt", $"{hashString} {filename}\n");
             }
         }
-        private static async Task CompareHashFile()
+        private static void CompareHashFile()
         {
             var lines = File.ReadAllLines("launcher-hashes.txt");
             var updatedLines = File.ReadAllLines("updated.txt");  //Replace with logic to get the file to compare against
@@ -98,7 +98,7 @@ namespace ProjectBO4Launcher
                     string filename = updatedLines[i].Substring(41);
                     Console.WriteLine($"Need to update {filename}");
                     File.Delete(filename);
-                    await Updates.DownloadUpdatedFile(filename);
+                    Updates.DownloadUpdatedFile(filename);
                 }
             }
         }
