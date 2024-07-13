@@ -12,7 +12,7 @@ namespace ProjectBo4Launcher
             CheckFiles.CheckForMyUpdates();
 
             //Check for Blackops4
-            if (!CheckFiles.isBlackOps4Dir())
+            if (!CheckFiles.IsBlackOps4Dir())
             {
                 Console.WriteLine("Couldn't find BlackOps4.exe, please run this appliction from your Black Ops 4 game directory.");
                 Console.ReadKey(true);
