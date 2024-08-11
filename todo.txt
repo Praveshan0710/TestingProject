@@ -1,0 +1,7 @@
+﻿Add IP address filter for vaild IPs
+Adjust the json indent sizes to match the existing json files that players have
+Update to support extracting client dlls from archives
+Add Launcher Settings for Offline and Online Mode
+Add Support for Ipaddress.txt file
+Updates.UpdateLauncher() Needs to be rewritten
+DownloadUpdatedFile() // Not Done
