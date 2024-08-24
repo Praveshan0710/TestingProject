@@ -4,7 +4,7 @@ using Windows.Win32;
 
 namespace ProjectBo4Launcher
 {
-    internal class Program
+    internal sealed class Program
     {
         public static void Main()
         {

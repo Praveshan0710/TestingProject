@@ -1,10 +1,11 @@
 ﻿using System.Diagnostics;
 using System.IO.Compression;
 using System.Security.Cryptography;
+using ProjectBo4Launcher;
 
 namespace Settings
 {
-    internal class Files
+    internal sealed class Files
     {
         public static bool ProjectBo4DllsInGameDir()
         {
@@ -88,10 +89,8 @@ namespace Settings
                 {
                     string filename = updatedLines[i].Substring(41); // discard the hash
                     Console.WriteLine($"Need to update {filename}");
-#if !DEBUG
                     File.Delete(filename);
                     await Updates.DownloadUpdatedFile(filename);
-#endif
                 }
             }
         }
@@ -109,7 +108,6 @@ namespace Settings
                     clientDLLsDirectory + "solo.zip", @".\");
         }
     }
-
 }
 
 // Old function

@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace ProjectBo4Launcher
 {
-    public class Updates
+    public sealed class Updates
     {
         public static async Task CheckLauncherUpdates()
         {

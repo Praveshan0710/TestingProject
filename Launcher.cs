@@ -3,18 +3,18 @@ using System.Text.Json.Nodes;
 
 namespace Settings
 {
-    internal class ClientSettings(string playerName, string demonwareIP)
+    internal sealed class ClientSettings(string playerName, string demonwareIP)
     {
         public string PlayerName = playerName;
         public string DemonwareIP = demonwareIP;
     }
 
-    public class LauncherSettings(bool UseReShade, bool onlineMode)
+    public sealed class LauncherSettings(bool UseReShade, bool onlineMode)
     {
         public bool UseReShade = UseReShade;
         public bool onlineMode = onlineMode;
     }
-    internal class Launcher
+    internal sealed class Launcher
     {
         private const string clientSettingsFile = "project-bo4.json";
         private const string launcherSettingsFile = @"project-bo4-data\files\launcher-settings.json";
